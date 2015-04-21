@@ -5,6 +5,7 @@ require_relative 'cache_store'
 server = TCPServer.new("127.0.0.1", 2000) #create a server
 
 cache_store = CacheStore.new
+
 loop do
 
   Thread.start(server.accept) do |client|  #separate execution
@@ -18,7 +19,6 @@ loop do
       puts "fetching #{url} from cache"
     else
       puts "cache miss for #{url}"
-      #sleep 5
       res = Net::HTTP.get_response(uri) # => String
       cache_store.store(url, res.body)
       body = res.body
@@ -27,5 +27,5 @@ loop do
     client.puts body
     client.close
 
-    end
   end
+end
