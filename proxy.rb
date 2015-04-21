@@ -1,19 +1,14 @@
 require 'net/http'
 require 'socket'
-require 'cgi'
 require_relative 'cache_store'
 
 server = TCPServer.new("127.0.0.1", 2000) #create a server
 
 cache_store = CacheStore.new
 loop do
-  Thread.start(server.accept) do |client|  #separate execution
-    # cgi = CGI::new('html4')
-    # puts cgi.query_string
 
-    # puts "ole!"
-    # url = 'https://data.cityofnewyork.us/resource/b7kx-qikm.json?borough=bronx'
-    # uri = URI(url)
+  Thread.start(server.accept) do |client|  #separate execution
+
     puts "Enter URL you want to cache"
     url = gets.chomp
     uri = URI(url)

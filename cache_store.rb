@@ -1,7 +1,7 @@
 class CacheStore
 
   def initialize(opts = {})
-    @max_size_elements = Integer(opts[:max_size_elements] || 1024*25)
+    @max_size_elements = Integer(opts[:max_size_elements] || 3)
     @max_size_bytes    = Integer(opts[:max_size_bytes] || 1024*25)
     @max_duration      = Integer(opts[:max_duration] || (30 * 1000))
     @data              = {}
@@ -30,12 +30,6 @@ class CacheStore
     datum = @data[key]
     datum ? datum.value : nil
 
-    # this is the same (but better..) as:
-    # if datum
-    #   return datum.value
-    # else
-    #   nil
-    # end
   end
 
   protected
@@ -51,13 +45,15 @@ class CacheStore
   def evict_by_max_size(new_element_size)
     while @data.values.size + new_element_size > @max_size_bytes
       key = @queue.pop
+      puts 'deleting ' + key + ' to make room for the new value as maximum byte value is ' + @max_size_bytes.to_s
       @data.delete(key)
     end
   end
 
   def evict_by_max_elements
-    while @queue.size > @max_size_elements
+    while (@queue.size+1) > @max_size_elements
       key = @queue.pop
+      puts 'deleting ' + key + ' because the max element in queue is greater than the set value ' + @max_size_elements.to_s
       @data.delete(key)
     end
   end
